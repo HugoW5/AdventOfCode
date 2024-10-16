@@ -4,7 +4,11 @@
         "iostream": "cpp",
         "ostream": "cpp",
         "xstring": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "map": "cpp",
+        "format": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
