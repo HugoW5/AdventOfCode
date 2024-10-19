@@ -26,7 +26,7 @@ public:
     }
     string GetTime()
     {
-        return to_string(Year) + "-" + to_string(Month) + "-" + to_string(Day) + " " + to_string(Hour) + ":" + to_string(Minute);
+        return '[' + to_string(Year) + "-" + to_string(Month) + "-" + to_string(Day) + " " + to_string(Hour) + ":" + to_string(Minute) + ']';
     }
 };
 class Guard
@@ -45,8 +45,8 @@ public:
         int year = stoi(time.substr(1, 4));
         int month = stoi(time.substr(6, 2));
         int day = stoi(time.substr(9, 2));
-        int hour = stoi(time.substr(12, 2));
-        int minute = stoi(time.substr(15, 2));
+        int hour = stoi(time.substr(time.find(' '), time.find(':')));
+        int minute = stoi(time.substr(time.find(':') + 1));
         TimeStamps.push_back(Time(year, month, day, hour, minute));
     }
     void AddAction(string action)
@@ -70,7 +70,7 @@ int main()
     int currentGuard = -1;
     for (int i = 0; i < input.size(); i++)
     {
-
+        
         if (input[i].find('#') == 25)
         {
             // get id
@@ -92,25 +92,34 @@ int main()
         }
     }
 
-    cout << "Unsorted: " << endl;
-    for (int i = 0; i < guards.size(); i++)
-    {
-        cout << guards[i].Id << ":{" << endl;
-        for (int j = 0; j < guards[i].TimeStamps.size(); j++)
-        {
-            cout << guards[i].TimeStamps[j].GetTime() << " : " << guards[i].Actions[j] << endl;
-        }
-        cout << "}" << endl;
-    }
     sortTime(guards);
-    cout << "----------------------------" << endl;
-    cout << "sorted: " << endl;
+
+    // compress and delete dupes
     for (int i = 0; i < guards.size(); i++)
     {
-        cout << guards[i].Id << ":{" << endl;
-        for (int j = 0; j < guards[i].TimeStamps.size(); j++)
+        for (int j = i + 1; j < guards.size(); j++)
         {
-            cout << guards[i].TimeStamps[j].GetTime() << " : " << guards[i].Actions[j] << endl;
+            if (guards[i].Id == guards[j].Id)
+            {
+                for (int k = 0; k < guards[j].TimeStamps.size(); k++)
+                {
+                    guards[i].AddTime(guards[j].TimeStamps[k].GetTime());
+                    guards[i].AddAction(guards[j].Actions[k]);
+                }
+                guards.erase(guards.begin() + j);
+            }
+        }
+    }
+
+    sortTime(guards);
+
+    //print guards
+    for (int i = 0; i < guards.size(); i++)
+    {
+        cout << guards[i].Id << "{" << endl;
+        for (int j = 0; j < guards[i].Actions.size(); j++)
+        {
+            cout << guards[i].TimeStamps[j].GetTime() << " - " << guards[i].Actions[j] << endl;
         }
         cout << "}" << endl;
     }
