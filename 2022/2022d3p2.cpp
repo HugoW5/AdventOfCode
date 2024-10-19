@@ -53,10 +53,6 @@ string findCommon(vector<string> &group)
         }
     }
 
-    for (int i = 0; i < common.size(); i++)
-    {
-        cout << common[i] << "-" << endl;
-    }
 
     return "";
 }
